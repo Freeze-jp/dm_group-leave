@@ -1,119 +1,153 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <!-- -------------------------------------------- -->
-  <link rel="icon" type="image/png" href="">
-
-  <head prefix="og: https://ogp.me/ns#">
-    <meta property="og:url" content="" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Discordツール" />
-    <meta property="og:description" content="
-      全てのDMグループから抜けます
-      グループ追加荒らしの対抗策として作成" />
-    <meta property="og:site_name" content="DMグループ退出ツール" />
-    <meta property="og:image" content="" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <!-- -------------------------------------------- -->
+<head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DMグループ退出ツール</title>
-  <!-- Google Fonts: Roboto Mono と Cinzel（見出し用）-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* リセット */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Roboto Mono', monospace;
-      /* 神秘的なグラデーション背景 */
-      background: radial-gradient(ellipse at top, #141e30, #243b55);
-      color: #e0e0e0;
+    :root {
+      --primary-color: #00aaff;
+      --primary-dark: #0088cc;
+      --secondary-color: #0077aa;
+      --bg-color: #f0f8ff;
+      --text-color: #333;
+      --overlay-color: rgba(0,0,50,0.4);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
       line-height: 1.6;
-      padding: 20px;
-      min-height: 100vh;
     }
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px 30px;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%;
+      background: var(--primary-color); box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      z-index: 1100; padding: 20px;
     }
-    h1 {
-      font-family: 'Cinzel', serif;
-      text-align: center;
-      margin-bottom: 20px;
-      color: #f39c12;
-      text-shadow: 0 0 10px rgba(243,156,18,0.8);
+    .nav-container { display: flex; align-items: center; }
+    .logo {
+      font-size: 2em; font-weight: 600; color: #fff; letter-spacing: 1px;
     }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 700;
-      color: #8e44ad;
+    #snow-canvas {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1000;
     }
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #8e44ad;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #e0e0e0;
-      font-size: 0.9rem;
-      transition: border-color 0.2s;
+    .tool-container {
+      max-width: 500px; margin: 120px auto 40px; padding: 20px 30px;
+      background: rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.2);
+      border-radius:15px; box-shadow:0 0 15px rgba(0,0,0,0.3);
+      font-family:'Roboto Mono',monospace; color:#333;
     }
-    input:focus {
-      border-color: #c39bd3;
-      outline: none;
+    .tool-container h1 {
+      font-family:'Cinzel',serif; text-align:center; margin-bottom:20px;
+      color:var(--primary-color);
     }
-    .btn {
-      width: 100%;
-      padding: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background: linear-gradient(45deg, #8e44ad, #3498db);
-      color: #121212;
-      transition: background 0.3s, box-shadow 0.3s;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    .tool-container label { display:block; margin-bottom:5px; font-weight:bold; }
+    .tool-container input[type="text"],
+    .tool-container input[type="password"],
+    .tool-container input[type="number"],
+    .tool-container input[type="file"] {
+      width:100%; padding:10px; margin-bottom:15px;
+      border:1px solid var(--primary-color); border-radius:5px;
+      background:#fff; font-size:0.9rem;
     }
-    .btn:hover {
-      background: linear-gradient(45deg, #c39bd3, #85c1e9);
-      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+    .tool-container input:focus { border-color: var(--primary-dark); outline: none; }
+    .tool-container .btn {
+      width:100%; padding:10px; font-size:1rem; font-weight:bold;
+      border:none; border-radius:5px; cursor:pointer;
+      background:linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+      color:#fff; margin-bottom:10px;
     }
-    .btn:disabled {
-      background: #555;
-      cursor: not-allowed;
+    .tool-container .btn:hover {
+      background:linear-gradient(45deg, var(--primary-dark), var(--primary-color));
     }
-    .status-box {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid #8e44ad;
-      border-radius: 5px;
-      padding: 10px;
-      margin-top: 15px;
-      min-height: 100px;
-      max-height: 300px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      font-size: 0.8rem;
+    .tool-container .status-box {
+      background:#eef; border:1px solid var(--primary-color);
+      border-radius:5px; padding:10px; margin-top:15px;
+      min-height:100px; max-height:300px; overflow-y:auto;
+      white-space:pre-wrap; font-size:0.8rem;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <canvas id="snow-canvas"></canvas>
+  <nav>
+    <div class="nav-container">
+      <div class="logo">Freeze Axis</div>
+    </div>
+  </nav>
+  <div class="tool-container">
     <h1>DMグループ退出ツール</h1>
-    <form id="boostForm">
+    <form id="leaveForm">
       <label for="token">Token</label>
       <input type="password" id="token" placeholder="DMグループから抜けたいアカウントのTokenを入力">
+      
+      <label for="limit">抜ける数 (指定しなければ全グループ)</label>
+      <input type="number" id="limit" placeholder="抜けるグループ数" min="1">
+  
+      <label>
+        <input type="checkbox" id="nonOwnerLeave">
+        自分が作成者でないグループからのみ抜ける
+      </label>
+      
+      <label for="newGroupName">新しいグループ名（任意）</label>
+      <input type="text" id="newGroupName" placeholder="新しいグループ名を入力">
+      
+      <label for="newIconFile">新しいグループアイコン画像（任意）</label>
+      <input type="file" id="newIconFile" accept="image/*">
+      
+      <button type="button" class="btn" id="checkGroupCountBtn">グループ数確認</button>
       <button type="button" class="btn" id="executeBtn">実行</button>
       <div class="status-box" id="message"></div>
     </form>
   </div>
+
+  <!-- スノーアニメ -->
+  <script>
+    (()=>{
+      const canvas = document.getElementById("snow-canvas");
+      const ctx = canvas.getContext("2d");
+      let w = innerWidth, h = innerHeight;
+      canvas.width=w; canvas.height=h;
+      class Snow{constructor(){this.reset();}
+        reset(){this.x=Math.random()*w;this.y=Math.random()*h;
+          this.r=Math.random()*3+1;this.vy=Math.random()*1+0.5;
+          this.vx=Math.random()*0.5-0.25;this.o=Math.random()*0.5+0.5;}
+        update(wind){this.x+=this.vx+wind;this.y+=this.vy;
+          if(this.y>h){this.y=0;this.x=Math.random()*w;}
+          if(this.x> w|| this.x<0){this.x=(this.x+w)%w;}
+        }
+        draw(){ctx.beginPath();
+          ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
+          ctx.fillStyle=`rgba(255,255,255,${this.o})`;
+          ctx.fill();
+        }
+      }
+      const flakes=[...Array(200)].map(_=>new Snow());
+      (function anim(){
+        const wind=Math.sin(Date.now()/5000)*0.5;
+        ctx.clearRect(0,0,w,h);
+        flakes.forEach(f=>{f.update(wind);f.draw();});
+        requestAnimationFrame(anim);
+      })();
+      addEventListener("resize",()=>{
+        w=innerWidth; h=innerHeight;canvas.width=w;canvas.height=h;
+      });
+    })();
+  </script>
+
+  <!-- Service Worker 登録 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg=> console.log('SW registered:', reg.scope))
+        .catch(err=> console.warn('SW registration failed:', err));
+    }
+  </script>
+
   <script src="script.js"></script>
 </body>
 </html>
